@@ -1,4 +1,5 @@
 import os
+os.environ["OMP_NUM_THREADS"] = "1"  # Fix for Scikit-Learn KMeans freezing inside Windows Flask threads
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import pandas as pd
 from datetime import datetime
