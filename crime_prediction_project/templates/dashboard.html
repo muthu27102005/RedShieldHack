@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block page_title %}OMNI-CORTEX DASHBOARD{% endblock %}
+{% block page_subtitle %}Real-time Sector Aggregation & Resource Metrics{% endblock %}
+
+{% block content %}
+<div class="grid-4">
+    <div class="panel metric-box">
+        <h4><i class="fa-solid fa-file-shield text-muted"></i> Active Records</h4>
+        <div class="val" style="color:var(--primary)">{{ total|default(1500) }}</div>
+        <div class="trend up"><i class="fa-solid fa-arrow-trend-up"></i> +12% since last sync</div>
+    </div>
+    <div class="panel metric-box">
+        <h4><i class="fa-solid fa-triangle-exclamation text-muted"></i> Critical Priorities</h4>
+        <div class="val" style="color:var(--danger)">{{ severe|default(423) }}</div>
+        <div class="trend down"><i class="fa-solid fa-arrow-trend-down"></i> -3% variance</div>
+    </div>
+    <div class="panel metric-box">
+        <h4><i class="fa-solid fa-handcuffs text-muted"></i> Primary Modus</h4>
+        <div class="val" style="color:var(--text-main); font-size: 1.8rem;">{{ top_crime|default('Theft') }}</div>
+        <div class="trend text-muted">Top observed category</div>
+    </div>
+    <div class="panel metric-box">
+        <h4><i class="fa-solid fa-tower-broadcast text-muted"></i> Predictive Efficiency</h4>
+        <div class="val" style="color:var(--success)">88.4%</div>
+        <div class="trend up" style="color:var(--success)"><i class="fa-solid fa-arrow-trend-up"></i> Optimal</div>
+    </div>
+</div>
+
+<div class="grid-2-layout">
+    <div class="panel">
+        <h4 style="margin-bottom: 20px; color: var(--text-muted); text-transform: uppercase;">Temporal Crime Distribution (24H)</h4>
+        <div style="position: relative; height: 280px; width: 100%;">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+    <div class="panel" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+        <i class="fa-solid fa-satellite" style="font-size: 4rem; color: var(--primary); opacity: 0.5; margin-bottom: 20px;"></i>
+        <h3 style="margin-bottom: 10px;">Tactical Deployment</h3>
+        <p style="color:var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Run the predictive threat engine to generate optimized geographic routing based on current intelligence constraints.</p>
+        <a href="{{ url_for('result') }}" class="btn btn-primary" style="width: 100%;">Execute Directive</a>
+    </div>
+</div>
+
+<div class="panel" style="margin-bottom: 30px;">
+    <h4 style="margin-bottom: 20px; color: var(--text-muted); text-transform: uppercase;"><i class="fa-solid fa-list"></i> Live Operations Feed (Recent Dispatch)</h4>
+    <div style="overflow-x: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Incident ID</th>
+                    <th>Action Time</th>
+                    <th>Classification</th>
+                    <th>Severity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in recent_incidents %}
+                <tr>
+                    <td style="color:var(--primary); font-weight:600;"><i class="fa-solid fa-link" style="font-size:0.7rem; margin-right:5px; opacity:0.5;"></i>{{ rec.incident_id }}</td>
+                    <td>{{ rec.date }} | {{ rec.time }}</td>
+                    <td>{{ rec.crime_type }}</td>
+                    <td>
+                        {% if rec.severity_index >= 7 %}
+                        <span class="badge badge-warning" style="background: rgba(255, 51, 102, 0.2); color: var(--danger);">Level {{ rec.severity_index }}</span>
+                        {% else %}
+                        <span class="badge badge-success">Level {{ rec.severity_index }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/crime_trends')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const labels = Object.keys(data).map(h => `${h}:00`);
+            const values = Object.values(data);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Projected Incident Volume',
+                        data: values,
+                        borderColor: '#00d2ff',
+                        backgroundColor: 'rgba(0, 210, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8b92a5' }, beginAtZero: true },
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8b92a5' } }
+                    }
+                }
+            });
+        });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to the AI Crime Prediction System</h1>
+    <p>Upload raw crime FIR coordinates to automatically visualize tactical hotspots and compute optimized preventive patrol routes using Machine Learning.</p>
+    <a href="{{ url_for('upload') }}" class="btn btn-primary">Start Uploading Data</a>
+</div>
+{% endblock %}

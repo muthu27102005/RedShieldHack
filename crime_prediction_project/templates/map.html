@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header-split">
+    <div>
+        <h2>Heatmap Visualization</h2>
+        <p class="text-muted">Interactive folium layer mapped tightly to raw data input.</p>
+    </div>
+    
+    <form action="{{ url_for('view_map') }}" method="POST" style="display:flex; gap:10px; align-items:center;">
+        <select name="crime_type" onchange="this.form.submit()" class="select-css">
+            <option value="All" {% if not selected_type or selected_type == 'All' %}selected{% endif %}>All Crimes</option>
+            {% for ctype in crime_types %}
+                <option value="{{ ctype }}" {% if selected_type == ctype %}selected{% endif %}>{{ ctype }}</option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+<div class="map-wrapper">
+    {{ map_html | safe }}
+</div>
+
+<div style="text-align: center; margin-top: 30px;">
+    <a href="{{ url_for('result') }}" class="btn btn-primary">
+        <i class="fa-solid fa-brain"></i> Trigger AI Prediction
+    </a>
+</div>
+{% endblock %}

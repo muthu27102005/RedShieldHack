@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card card-center">
+    <i class="fa-solid fa-file-csv icon-large"></i>
+    <h2>Upload Dataset</h2>
+    <p class="text-muted">Fields required: latitude, longitude, crime_type, date, time</p>
+    
+    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required />
+        <button type="submit" class="btn btn-primary">Upload CSV</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block page_title %}Predictive Threat Engine{% endblock %}
+{% block page_subtitle %}Algorithmic resource allocation and coordinate trajectory. {% endblock %}
+
+{% block content %}
+<div class="grid-2-layout">
+    <!-- Map Display -->
+    <div class="panel map-wrap" style="padding: 10px; border-color: var(--primary);">
+        {{ map_html | safe }}
+    </div>
+
+    <!-- Parameter Controls -->
+    <div class="panel">
+        <h4 style="margin-bottom: 25px; color: var(--text-main); font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+            <i class="fa-solid fa-sliders"></i> Tactical Parameters
+        </h4>
+        
+        <form action="{{ url_for('result') }}" method="POST">
+            <div class="form-group">
+                <label><i class="fa-solid fa-cloud-rain"></i> Weather Context</label>
+                <select name="weather" class="form-control">
+                    <option value="All">Global (All Variations)</option>
+                    <option value="Clear">Clear / Stable</option>
+                    <option value="Rain">Precipitation (Rain)</option>
+                    <option value="Fog">Low Visibility (Fog)</option>
+                    <option value="Snow">Severe Cold (Snow)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fa-solid fa-clock"></i> Deployment Shift</label>
+                <select name="shift" class="form-control">
+                    <option value="All">24-Hour Cycle</option>
+                    <option value="Day">Day Shift (06:00 - 18:00)</option>
+                    <option value="Night">Night Shift (18:00 - 06:00)</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 30px;">
+                <label><i class="fa-solid fa-car-side"></i> Available Response Units</label>
+                <input type="number" name="units" class="form-control" value="{{ units|default(3) }}" min="1" max="10">
+                <small style="color:var(--text-muted); font-size: 0.8rem; margin-top:5px; display:block;">Defines standard K-Means centroid allocation constraint.</small>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-bolt"></i> Compute Trajectory
+            </button>
+        </form>
+
+        <div style="margin-top: 30px; background: rgba(255, 51, 102, 0.1); border-left: 3px solid var(--danger); padding: 15px;">
+            <p style="color: var(--danger); font-size: 0.9rem; font-weight: 600;">
+                <i class="fa-solid fa-triangle-exclamation"></i> Identified {{ num_clusters }} active threat clusters based on current constraints.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

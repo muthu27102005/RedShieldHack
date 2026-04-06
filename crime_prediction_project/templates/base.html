@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PredictGuard Nexus | Police Command</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo-area">
+            <h2><i class="fa-solid fa-satellite-dish"></i> OMNI-CORTEX</h2>
+            <div style="color:var(--text-muted); font-size:0.75rem; font-weight:600; letter-spacing:1px; margin-top:5px; margin-left:32px;">LAW ENFORCEMENT OS</div>
+        </div>
+        
+        <nav>
+            <a href="{{ url_for('dashboard') }}" class="nav-item">
+                <i class="fa-solid fa-chart-line"></i> Command Center
+            </a>
+            <a href="{{ url_for('view_map') }}" class="nav-item">
+                <i class="fa-solid fa-map-location-dot"></i> Live Topography
+            </a>
+            <a href="{{ url_for('result') }}" class="nav-item">
+                <i class="fa-solid fa-crosshairs"></i> Predictive AI Threat Engine
+            </a>
+            
+            <div style="margin: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <p style="color:var(--text-muted); font-size:0.75rem; font-weight:600; text-transform:uppercase; margin-bottom:10px;">Dispatch & Field Ops</p>
+                <!-- NEW FIR FILING LINK -->
+                <a href="{{ url_for('log_fir') }}" class="nav-item">
+                    <i class="fa-solid fa-file-pen"></i> Log Active FIR
+                </a>
+            </div>
+
+            <div style="margin: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <p style="color:var(--text-muted); font-size:0.75rem; font-weight:600; text-transform:uppercase; margin-bottom:10px;">System Admin</p>
+                <a href="{{ url_for('upload') }}" class="nav-item">
+                    <i class="fa-solid fa-database"></i> Bulk Data Sync (CSV)
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-header">
+            <div>
+                <h1>{% block page_title %}{% endblock %}</h1>
+                <p style="color:var(--text-muted);">{% block page_subtitle %}{% endblock %}</p>
+            </div>
+            <div class="system-status">
+                <div class="status-dot"></div> MAIN ALGORITHM SYNCED
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div style="margin-bottom: 25px;">
+                {% for message in messages %}
+                    <div class="panel flash-message">
+                        <i class="fa-solid fa-info-circle" style="color:var(--primary); font-size:1.2rem;"></i> 
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
