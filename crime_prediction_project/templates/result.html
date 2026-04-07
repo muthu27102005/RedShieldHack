@@ -18,13 +18,24 @@
         
         <form action="{{ url_for('result') }}" method="POST">
             <div class="form-group">
+                <label><i class="fa-solid fa-map-location-dot"></i> Operational Jurisdiction</label>
+                <select name="city" class="form-control" style="border-color: var(--primary);">
+                    <option value="All">State-Wide (All Tamil Nadu)</option>
+                    <option value="Chennai">Chennai District</option>
+                    <option value="Coimbatore">Coimbatore District</option>
+                    <option value="Madurai">Madurai District</option>
+                    <option value="Tiruchirappalli">Tiruchirappalli District</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
                 <label><i class="fa-solid fa-cloud-rain"></i> Weather Context</label>
                 <select name="weather" class="form-control">
                     <option value="All">Global (All Variations)</option>
                     <option value="Clear">Clear / Stable</option>
                     <option value="Rain">Precipitation (Rain)</option>
                     <option value="Fog">Low Visibility (Fog)</option>
-                    <option value="Snow">Severe Cold (Snow)</option>
+                    <option value="Extreme Heat">Extreme Heat</option>
                 </select>
             </div>
             
@@ -53,6 +64,22 @@
                 <i class="fa-solid fa-triangle-exclamation"></i> Identified {{ num_clusters }} active threat clusters based on current constraints.
             </p>
         </div>
+
+        {% if threat_area %}
+        <div style="margin-top: 20px; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--primary); padding: 20px; border-radius: 8px;">
+            <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 1rem;">
+                <i class="fa-solid fa-robot" style="margin-right: 5px;"></i> AI TACTICAL DIRECTIVE
+            </h4>
+            <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">
+                Critical threat density localized near <strong>{{ threat_area }}</strong>. 
+                <br><br>
+                <span style="color: var(--text-muted);">
+                    <i class="fa-solid fa-arrow-right" style="color: var(--secondary); font-size: 0.8rem;"></i> 
+                    <strong>Suggestion:</strong> Deploy available patrol units immediately to this sector. Initiate constant clockwise surveillance along the generated blue route to suppress active hotspots.
+                </span>
+            </p>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

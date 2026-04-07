@@ -56,7 +56,7 @@ def log_fir():
         now = datetime.now()
         date_str = now.strftime('%Y-%m-%d')
         time_str = now.strftime('%H:%M')
-        incident_id = f"NYPD-ACT-{now.strftime('%H%M%S')}"
+        incident_id = f"TN-FIR-{now.strftime('%H%M%S')}"
         
         new_record = pd.DataFrame([{
             'incident_id': incident_id,
@@ -148,10 +148,22 @@ def result():
     units = 3
 
     if request.method == 'POST':
+        target_city = request.form.get('city')
         weather_focus = request.form.get('weather')
         target_shift = request.form.get('shift')
         units = int(request.form.get('units', 3))
         
+        # Jurisdictional Bounding Box Filter
+        if target_city and target_city != "All":
+            if target_city == "Chennai":
+                df = df[(df['latitude'] > 12.8) & (df['latitude'] < 13.3) & (df['longitude'] > 80.0)]
+            elif target_city == "Coimbatore":
+                df = df[(df['latitude'] > 10.8) & (df['latitude'] < 11.2) & (df['longitude'] < 77.2)]
+            elif target_city == "Madurai":
+                df = df[(df['latitude'] > 9.7) & (df['latitude'] < 10.1) & (df['longitude'] > 77.9) & (df['longitude'] < 78.3)]
+            elif target_city == "Tiruchirappalli":
+                df = df[(df['latitude'] > 10.6) & (df['latitude'] < 11.0) & (df['longitude'] > 78.5) & (df['longitude'] < 78.9)]
+
         if weather_focus and weather_focus != "All" and 'weather_condition' in df.columns:
             df = df[df['weather_condition'] == weather_focus]
         
@@ -171,7 +183,21 @@ def result():
     hotspots, patrol_route, num_clusters = train_kmeans(df, num_clusters=num_clusters)
     map_html = generate_prediction_map(df, hotspots, patrol_route)
     
-    return render_template('result.html', map_html=map_html, num_clusters=num_clusters, units=units)
+    # Generate Tactical AI Suggestion using Reverse Geocoding
+    threat_area = f"Coordinates: {hotspots[0][0]:.4f}, {hotspots[0][1]:.4f}"
+    try:
+        from geopy.geocoders import Nominatim
+        geolocator = Nominatim(user_agent="omni_cortex_app")
+        h_lat, h_lon = hotspots[0]
+        location = geolocator.reverse(f"{h_lat}, {h_lon}", timeout=2)
+        if location:
+            parts = location.address.split(',')
+            # Try to grab the first two parts of the address (e.g. "Anna Nagar, Chennai")
+            threat_area = f"{parts[0].strip()}, {parts[1].strip()}" if len(parts) > 1 else location.address
+    except Exception:
+        pass
+    
+    return render_template('result.html', map_html=map_html, num_clusters=num_clusters, units=units, threat_area=threat_area)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

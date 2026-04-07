@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 
+{% block page_title %}System Admin: Data Sync{% endblock %}
+{% block page_subtitle %}Manually override the local CSV dataset payload.{% endblock %}
+
 {% block content %}
-<div class="card card-center">
-    <i class="fa-solid fa-file-csv icon-large"></i>
-    <h2>Upload Dataset</h2>
-    <p class="text-muted">Fields required: latitude, longitude, crime_type, date, time</p>
+<div class="panel" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 50px;">
+    <i class="fa-solid fa-database" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px;"></i>
+    <h3 style="margin-bottom: 10px;">Upload Master Network Protocol</h3>
+    <p style="color:var(--text-muted); margin-bottom: 30px;">Fields required: latitude, longitude, crime_type, date, time, weather_condition, severity_index</p>
     
     <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".csv" required />
-        <button type="submit" class="btn btn-primary">Upload CSV</button>
+        <input type="file" name="file" accept=".csv" class="form-control" style="margin-bottom: 20px;" required />
+        <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fa-solid fa-cloud-arrow-up"></i> Sync Database Structure</button>
     </form>
 </div>
 {% endblock %}

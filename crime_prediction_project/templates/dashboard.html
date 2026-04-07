@@ -61,10 +61,10 @@
                     <td>{{ rec.date }} | {{ rec.time }}</td>
                     <td>{{ rec.crime_type }}</td>
                     <td>
-                        {% if rec.severity_index >= 7 %}
-                        <span class="badge badge-warning" style="background: rgba(255, 51, 102, 0.2); color: var(--danger);">Level {{ rec.severity_index }}</span>
+                        {% if rec.get('severity_index', 5) >= 7 %}
+                        <span class="badge badge-warning" style="background: rgba(255, 51, 102, 0.2); color: var(--danger);">Level {{ rec.get('severity_index', 'N/A') }}</span>
                         {% else %}
-                        <span class="badge badge-success">Level {{ rec.severity_index }}</span>
+                        <span class="badge badge-success">Level {{ rec.get('severity_index', 'N/A') }}</span>
                         {% endif %}
                     </td>
                 </tr>

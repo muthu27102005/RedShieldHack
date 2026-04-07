@@ -1,12 +1,15 @@
 import folium
 from folium.plugins import HeatMap
 
-def get_base_map(df, zoom=12):
+def get_base_map(df, zoom=7):
     """Returns a map centered around the dataset's mean coordinates."""
     if df is None or df.empty:
-        return folium.Map(location=[0, 0], zoom_start=2, tiles="cartodbdark_matter")
+        return folium.Map(location=[11.1271, 78.6569], zoom_start=7, tiles="cartodbdark_matter")
+    
+    # Dynamic Tactical Zoom Engine: If data is filtered massively (like a city filter), automatically zoom into it natively!
+    dynamic_zoom = 12 if len(df) < 1000 else 7
     map_center = [df['latitude'].mean(), df['longitude'].mean()]
-    return folium.Map(location=map_center, zoom_start=zoom, tiles="cartodbdark_matter")
+    return folium.Map(location=map_center, zoom_start=dynamic_zoom, tiles="cartodbdark_matter")
 
 def generate_heatmap(df):
     """Generates a folium map with a heatmap layer."""
